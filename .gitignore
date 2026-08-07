@@ -7,3 +7,5 @@ venv/
 *.egg-info/
 dist/
 build/
+price_image.png
+fonts/*.ttf
