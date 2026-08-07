@@ -200,9 +200,16 @@ def format_report(averages: list[dict], channel_stats: dict) -> str:
     iran_tz = timezone(timedelta(hours=3, minutes=30))
     now = datetime.now(iran_tz)
 
+    day_names = ['دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه', 'یکشنبه']
+    day_name = day_names[now.weekday()]
+    jdate = now.strftime('%Y/%m/%d')
+
     lines = [
+        '☀️ <b>سلام و روز بخیر</b>',
+        f'📅 {day_name}، {jdate}',
+        '',
         '📊 <b>قیمت روزانه آهن‌آلات</b>',
-        f'🗓 {now.strftime("%Y/%m/%d")} | 🕐 {now.strftime("%H:%M")}',
+        f'🕐 {now.strftime("%H:%M")}',
         '━━━━━━━━━━━━━━━━━━━━',
         '',
     ]
