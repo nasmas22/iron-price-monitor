@@ -27,7 +27,6 @@ CHANNELS = [
     'sfk_steels',
     'dorpadtabriz_co',
     'afasteel',
-    'fuladarvintejarat',
     'oxintrading',
     'damirbazar',
     'pardissteel1',
