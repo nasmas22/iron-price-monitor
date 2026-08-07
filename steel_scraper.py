@@ -59,6 +59,8 @@ def normalize_product(name: str) -> str:
     name = re.sub(r'^ميلگرد', 'میلگرد', name)
     name = re.sub(r'میلگرد\s+آجدار\s+A(\d)', r'میلگرد A\1', name)
     name = re.sub(r'میلگرد\s+A(\d)\s+سایز\s+(\d+)', r'میلگرد A\1 \2', name)
+    # Convert Persian numerals to English in the name
+    name = fa_to_en(name)
     return name
 
 
@@ -82,7 +84,8 @@ def parse_price(raw: str, text_around: str = '') -> int | None:
         return None
     
     # Convert rial to toman if price is too high
-    if val > 2_000_000:
+    # 6+ digit prices are likely rial (e.g., 760000 rial = 76000 toman)
+    if val > 100_000:
         val = val // 10
     
     # Reasonable range: 5,000 - 200,000 toman/kg
@@ -108,26 +111,58 @@ def scrape_channel(username: str) -> list[dict]:
             if not td:
                 continue
             text = fa_to_en(td.get_text(separator='|', strip=True))
+            # Clean non-breaking spaces and extra whitespace
+            text = text.replace('\xa0', ' ')
+            text = re.sub(r'\s+', ' ', text)
 
             # Skip if no price-like numbers
-            if not re.search(r'\b\d{5,7}\b', text) and not re.search(r'\b\d{2}\.\d{3}\b', text):
+            # Check for: 5-7 digit numbers, or numbers with commas (750,000)
+            if (not re.search(r'\b\d{5,7}\b', text) and 
+                not re.search(r'\b\d{2}\.\d{3}\b', text) and
+                not re.search(r'\b\d{3},\d{3}\b', text)):
                 continue
 
             # Pattern 1: "product ... : price" or "product | ... ← price"
+            # Handles formats like:
+            #   میلگرد آجدار A2 سایز 8:|760000
+            #   میلگرد آجدار A2 سایز 10: 755000
+            #   میلگرد | سایز 8 | گرید (A2) ← 750,000
             for m in re.finditer(
                 r'(میلگرد|ميلگرد|تیرآهن|ti*rahan|ورق|sheet)'
-                r'\s*(?:آجدار\s*)?(?:A[234]|B500B)?'
+                r'\s*(?:آجدار\s*)?(A[234]|B500B|A500C)?'  # Capture grade
                 r'\s*(?:سایز|سايز|SA)?\s*(\d+)?'
-                r'\s*(?:الی|تا)?\s*(\d+)?'
-                r'\s*(?:←|:|\|)\s*([\d,\.]+)',
+                r'(?:\s*(?:الی|تا)\s*(\d+))?'  # Optional range
+                r'\s*(?:←|:|\|)\s*\|?\s*([\d,\.]+)',
                 text, re.IGNORECASE
             ):
                 prod = m.group(1)
-                size = m.group(3) or m.group(2) or ''
-                price = parse_price(m.group(4), text)
+                grade = m.group(2) or ''
+                size = m.group(4) or m.group(3) or ''
+                price = parse_price(m.group(5), text)
+                if price:
+                    # Build product name with grade
+                    product_name = f'{prod}'
+                    if grade:
+                        product_name += f' {grade}'
+                    if size:
+                        product_name += f' {size}'
+                    results.append({
+                        'product': product_name.strip(),
+                        'price': price,
+                        'channel': username,
+                    })
+
+            # Pattern 1b: zafarSteelbonab format "سایز 8 | گرید (A2) ← 750,000"
+            for m in re.finditer(
+                r'سایز\s*(\d+)\s*\|\s*گرید\s*\((A[234]|B500B|A500C)\)\s*←\s*([\d,\.]+)',
+                text
+            ):
+                size = m.group(1)
+                grade = m.group(2)
+                price = parse_price(m.group(3), text)
                 if price:
                     results.append({
-                        'product': f'{prod} {size}'.strip(),
+                        'product': f'milgird {grade} {size}',
                         'price': price,
                         'channel': username,
                     })
@@ -194,6 +229,128 @@ def calculate_averages(prices: list[dict]) -> list[dict]:
 
 
 # ── Report Formatting ──────────────────────────────────────────
+def extract_grade_size(product: str) -> tuple[str, str]:
+    """Extract grade and size from normalized product name."""
+    product = product.strip()
+    grade = ''
+    size = ''
+
+    # Try to match grade
+    grade_match = re.search(r'(A[234]|B500B|A500C)', product)
+    if grade_match:
+        grade = grade_match.group(1)
+
+    # Try to match size number
+    size_match = re.search(r'(\d+)$', product)
+    if size_match:
+        size = size_match.group(1)
+
+    return grade, size
+
+
+def map_to_template(averages: list[dict]) -> list[dict]:
+    """Map scraped prices to the fixed template structure."""
+    # Fixed template order
+    template = [
+        {'product': 'میلگرد', 'size': '8', 'grade': 'A2'},
+        {'product': 'میلگرد', 'size': '8', 'grade': 'A3'},
+        {'product': 'میلگرد', 'size': '10', 'grade': 'A2'},
+        {'product': 'میلگرد', 'size': '10', 'grade': 'A3'},
+        {'product': 'میلگرد', 'size': '12', 'grade': 'A2'},
+        {'product': 'میلگرد', 'size': '12', 'grade': 'A3'},
+        {'product': 'میلگرد', 'size': '14-25', 'grade': 'A3'},
+        {'product': 'میلگرد', 'size': '28-32', 'grade': 'A3'},
+        {'product': 'میلگرد', 'size': '14-25', 'grade': 'A4'},
+        {'product': 'میلگرد', 'size': '10', 'grade': 'B500B'},
+        {'product': 'میلگرد', 'size': '10', 'grade': 'A500C'},
+        {'product': 'میلگرد', 'size': '12', 'grade': 'B500B'},
+        {'product': 'میلگرد', 'size': '12', 'grade': 'A500C'},
+        {'product': 'میلگرد', 'size': '14-25', 'grade': 'B500B'},
+        {'product': 'میلگرد', 'size': '14-25', 'grade': 'A500C'},
+    ]
+
+    # Build lookup from scraped data
+    prices_map = {}
+    for item in averages:
+        grade, size = extract_grade_size(item['product'])
+        if grade and size:
+            prices_map[(grade, size)] = item['avg']
+
+    # Fill template
+    result = []
+    for t in template:
+        key = (t['grade'], t['size'])
+        price = prices_map.get(key)
+
+        # For grouped sizes (14-25, 28-32), try to aggregate
+        if price is None and '-' in t['size']:
+            lo, hi = t['size'].split('-')
+            group_prices = []
+            for s in range(int(lo), int(hi) + 1):
+                p = prices_map.get((t['grade'], str(s)))
+                if p:
+                    group_prices.append(p)
+            if group_prices:
+                price = round(sum(group_prices) / len(group_prices))
+
+        result.append({
+            'product': t['product'],
+            'size': t['size'],
+            'grade': t['grade'],
+            'price': price,
+        })
+
+    return result
+
+
+def load_previous_prices() -> dict:
+    """Load previous day's prices from cache file."""
+    cache_path = os.path.join(os.path.dirname(__file__), '.price_cache.json')
+    try:
+        with open(cache_path, 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+
+def save_prices(data: list[dict]):
+    """Save current prices to cache file for next comparison."""
+    cache_path = os.path.join(os.path.dirname(__file__), '.price_cache.json')
+    cache = {}
+    for item in data:
+        if item['price'] is not None:
+            key = f"{item['grade']}_{item['size']}"
+            cache[key] = item['price']
+    with open(cache_path, 'w') as f:
+        json.dump(cache, f, ensure_ascii=False)
+
+
+def format_price_block(item: dict, prev_prices: dict) -> str:
+    """Format a single price block with bullet points."""
+    lines = [f"🔸 <b>{item['product']}</b>"]
+    lines.append(f"   • سایز: {item['size']}")
+    lines.append(f"   • گرید: {item['grade']}")
+
+    if item['price'] is not None:
+        price_str = f"{item['price']:,}".replace(',', '.')
+        cache_key = f"{item['grade']}_{item['size']}"
+        prev = prev_prices.get(cache_key)
+
+        # Price change indicator
+        indicator = ''
+        if prev and prev != item['price']:
+            if item['price'] > prev:
+                indicator = ' 🟢↑'
+            elif item['price'] < prev:
+                indicator = ' 🔴↓'
+
+        lines.append(f"   • قیمت (تومان): {price_str}{indicator}")
+    else:
+        lines.append(f"   • قیمت (تومان): —")
+
+    return '\n'.join(lines)
+
+
 def format_report(averages: list[dict], channel_stats: dict) -> str:
     """Format the report as HTML for Telegram."""
     iran_tz = timezone(timedelta(hours=3, minutes=30))
@@ -203,34 +360,29 @@ def format_report(averages: list[dict], channel_stats: dict) -> str:
     day_name = day_names[now.weekday()]
     jdate = now.strftime('%Y/%m/%d')
 
+    # Map prices to template
+    template_data = map_to_template(averages)
+    prev_prices = load_previous_prices()
+
     lines = [
         '☀️ <b>سلام و روز بخیر</b>',
         f'📅 {day_name}، {jdate}',
         '',
-        '📊 <b>قیمت روزانه آهن‌آلات</b>',
+        '📊 <b>قیمت روزانه میلگرد</b>',
         f'🕐 {now.strftime("%H:%M")}',
         '━━━━━━━━━━━━━━━━━━━━',
         '',
     ]
 
-    for r in averages:
-        mn = f"{r['min']:,}".replace(',', '.')
-        mx = f"{r['max']:,}".replace(',', '.')
-        avg = f"{r['avg']:,}".replace(',', '.')
-        lines.append(f'▪️ <b>{r["product"]}</b>: {avg} تومان/kg')
-        if r['min'] != r['max']:
-            lines.append(f'   📉 {mn} — 📈 {mx} ({r["sources"]} منبع)')
-        else:
-            lines.append(f'   ({r["sources"]} منبع)')
+    for item in template_data:
+        lines.append(format_price_block(item, prev_prices))
         lines.append('')
 
     lines.append('━━━━━━━━━━━━━━━━━━━━')
     total_sources = sum(r['sources'] for r in averages)
     lines.append(f'📌 {len(averages)} محصول | {total_sources} منبع کل')
-
-    active = [f'@{k}' for k, v in channel_stats.items() if v > 0]
-    if active:
-        lines.append(f'📡 کانال‌های فعال: {", ".join(active)}')
+    lines.append('')
+    lines.append('⚠️ رنگ‌ها: 🟢 قیمت ↑ | 🔴 قیمت ↓')
     lines.append('')
     lines.append('🤖 گزارش خودکار')
 
@@ -311,6 +463,10 @@ def main():
 
     report = format_report(averages, channel_stats)
     print(report)
+
+    # Save prices for next comparison
+    template_data = map_to_template(averages)
+    save_prices(template_data)
 
     if post:
         post_to_telegram(report)
