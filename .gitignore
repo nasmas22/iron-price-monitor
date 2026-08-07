@@ -9,3 +9,4 @@ dist/
 build/
 price_image.png
 fonts/*.ttf
+.price_monitor_cache.json

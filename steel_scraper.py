@@ -31,6 +31,9 @@ CHANNELS = [
     'damirbazar',
     'pardissteel1',
     'ArianSteel',
+    'Fuladnab',
+    'javidsteel_bonab',
+    'steelradhamedan',
 ]
 
 HEADERS = {
