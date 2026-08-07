@@ -13,7 +13,7 @@ def fa(text):
 FB = '/data/workspace/fonts/Vazirmatn-Bold.ttf'
 FR = '/data/workspace/fonts/Vazirmatn.ttf'
 
-f_company = ImageFont.truetype(FB, 30)
+f_company = ImageFont.truetype(FB, 36)
 f_title   = ImageFont.truetype(FB, 40)
 f_date    = ImageFont.truetype(FR, 28)
 f_head    = ImageFont.truetype(FB, 22)
@@ -25,17 +25,17 @@ f_branch  = ImageFont.truetype(FB, 22)
 f_phone   = ImageFont.truetype(FR, 20)
 f_foot    = ImageFont.truetype(FR, 18)
 
-# ── Colors ────────────────────────────────────────────────────
-BG      = '#0d1117'
-CARD    = '#161b22'
-CARD2   = '#0d1117'
-RED     = '#da3633'
-GOLD    = '#f0c040'
-GREEN   = '#3fb950'
-WHITE   = '#e6edf3'
-GRAY    = '#8b949e'
-LINE    = '#30363d'
-CYAN    = '#58a6ff'
+# ── Colors (Light Theme) ─────────────────────────────────────
+BG      = '#f5f5f5'
+CARD    = '#ffffff'
+CARD2   = '#eef1f5'
+RED     = '#c0392b'
+GOLD    = '#d4880f'
+GREEN   = '#1a8a3f'
+TEXT    = '#1a1a1a'
+GRAY    = '#555555'
+LINE    = '#cccccc'
+BLUE    = '#1565c0'
 
 # ── Date (Shamsi) ─────────────────────────────────────────────
 tz = timezone(timedelta(hours=3, minutes=30))
@@ -72,7 +72,7 @@ n_rows = len([r for r in rows if r != 'divider'])
 n_divs = len([r for r in rows if r == 'divider'])
 
 # Height: company + title + date + table + contacts + footer
-H = (PAD + 50 + 55 + 40 + 20 + 40 + 8 +      # header area
+H = (PAD + 58 + 55 + 40 + 20 + 40 + 8 +      # header area
      n_rows * ROW_H + n_divs * 20 +             # table
      20 + 40 + 40 + 10 + 40 + 10 + 30 +        # contacts
      PAD)
@@ -84,8 +84,8 @@ y = PAD
 # ── Company name ──────────────────────────────────────────────
 company = fa('شرکت فولاد آروین تجارت امین ایرانیان')
 cw = draw.textbbox((0,0), company, font=f_company)[2]
-draw.text(((W-cw)//2, y), company, fill=CYAN, font=f_company)
-y += 50
+draw.text(((W-cw)//2, y), company, fill=BLUE, font=f_company)
+y += 58
 
 # ── Title ─────────────────────────────────────────────────────
 title = fa('📊 قیمت روزانه میلگرد')
@@ -131,9 +131,9 @@ for item in rows:
     draw.rounded_rectangle([(PAD-3, y), (W-PAD+3, y+ROW_H-4)], radius=6, fill=bg)
     ty = y + 12
 
-    draw.text((c_prod + 10, ty), fa(prod), fill=WHITE, font=f_prod)
+    draw.text((c_prod + 10, ty), fa(prod), fill=TEXT, font=f_prod)
     draw.text((c_grade + 10, ty), fa(grade), fill=GREEN, font=f_grade)
-    draw.text((c_size + 10, ty), fa(size), fill=WHITE, font=f_size)
+    draw.text((c_size + 10, ty), fa(size), fill=TEXT, font=f_size)
 
     pw = draw.textbbox((0,0), price, font=f_price)[2]
     px = c_price + COL_W - pw - 10
@@ -152,13 +152,13 @@ for branch, phones in contacts:
     # Branch name centered
     bt = fa(branch)
     bw = draw.textbbox((0,0), bt, font=f_branch)[2]
-    draw.text(((W-bw)//2, y), bt, fill=CYAN, font=f_branch)
+    draw.text(((W-bw)//2, y), bt, fill=BLUE, font=f_branch)
     y += 35
 
     # Phones centered
     phone_line = '  |  '.join(phones)
     pw = draw.textbbox((0,0), phone_line, font=f_phone)[2]
-    draw.text(((W-pw)//2, y), phone_line, fill=WHITE, font=f_phone)
+    draw.text(((W-pw)//2, y), phone_line, fill=TEXT, font=f_phone)
     y += 35
 
     # Small divider between branches
