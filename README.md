@@ -1,56 +1,56 @@
-# 🇮🇷 Iran Steel Price Monitor
+# 🇮🇷 مانیتور قیمت فولاد ایران
 
-Automatic monitoring of iron & steel prices from 13 Iranian Telegram channels, with smart averaging, branded image generation, and automated publishing.
+مانیتور خودکار قیمت میلگرد و فولاد از ۱۳ کانال تلگرام ایرانی، با میانگین‌گیری هوشمند، تولید عکس برنددار و انتشار خودکار.
 
-## ✨ Features
+## ✨ امکانات
 
-- **Real-time Monitoring** — Checks channels every 10 minutes during business hours
-- **Smart Price Extraction** — Regex-based extraction with Persian/Arabic numeral support
-- **Vision AI Integration** — Uses AI vision to read prices from photo-only channels
-- **Branded Image Generation** — Creates professional price cards with company branding
-- **Automatic Publishing** — Posts to Telegram channel with source links
-- **Duplicate Prevention** — Tracks last processed message per channel
-- **Outlier Detection** — Removes prices >20% from median
-- **Weighted Averaging** — Calculates accurate average prices per product
+- **مانیتور لحظه‌ای** — هر ۱۰ دقیقه کانال‌ها رو چک میکنه
+- **استخراج هوشمند قیمت** — با پشتیبانی از اعداد فارسی و عربی
+- **یکپارچه‌سازی Vision AI** — خواندن قیمت از عکس با هوش مصنوعی
+- **تولید عکس برنددار** — کارت قیمت حرفه‌ای با برند شرکت
+- **انتشار خودکار** — پست در کانال تلگرام با لینک منبع
+- **جلوگیری از تکرار** — ردیابی آخرین پست پردازش شده هر کانال
+- **تشخیص داده پرت** — حذف قیمت‌های بیش از ۲۰٪ از میانه
+- **میانگین وزنی** — محاسبه دقیق میانگین قیمت هر محصول
 
-## 🔌 Channels Monitored (13)
+## 🔌 کانال‌های تحت نظر (۱۳)
 
-### Text-Based Channels (8)
-| Channel | Description | Format |
-|---------|-------------|--------|
-| [@saebsteelco](https://t.me/saebsteelco) | فولاد صائب تبریز | Text (rial) |
-| [@zafarSteelbonab](https://t.me/zafarSteelbonab) | مجتمع فولاد ظفر بناب | Text (← arrow) |
-| [@FSDTABRIZ](https://t.me/FSDTABRIZ) | فولاد سازان دقيقی هشترود | Text (Persian numerals) |
-| [@sfk_steels](https://t.me/sfk_steels) | SFK Steels | Text (dot: 72.300) |
-| [@dorpadtabriz_co](https://t.me/dorpadtabriz_co) | گروه صنعتی درپاد | Text (rial) |
-| [@afasteel](https://t.me/afasteel) | آذر فولاد امین | Text (rial) |
-| [@oxintrading](https://t.me/oxintrading) | اوکسین تریدینگ | Text |
-| [@steelradhamedan](https://t.me/steelradhamedan) | فولاد راد همدان | Text |
+### کانال‌های متنی (۸)
+| کانال | توضیحات | فرمت |
+|-------|---------|------|
+| [@saebsteelco](https://t.me/saebsteelco) | فولاد صائب تبریز | متن (ریال) |
+| [@zafarSteelbonab](https://t.me/zafarSteelbonab) | مجتمع فولاد ظفر بناب | متن (← فلش) |
+| [@FSDTABRIZ](https://t.me/FSDTABRIZ) | فولاد سازان دقيقی هشترود | متن (اعداد فارسی) |
+| [@sfk_steels](https://t.me/sfk_steels) | SFK Steels | متن (نقطه: 72.300) |
+| [@dorpadtabriz_co](https://t.me/dorpadtabriz_co) | گروه صنعتی درپاد | متن (ریال) |
+| [@afasteel](https://t.me/afasteel) | آذر فولاد امین | متن (ریال) |
+| [@oxintrading](https://t.me/oxintrading) | اوکسین تریدینگ | متن |
+| [@steelradhamedan](https://t.me/steelradhamedan) | فولاد راد همدان | متن |
 
-### Photo-Only Channels (4) — Vision Required
-| Channel | Description | Method |
-|---------|-------------|--------|
-| [@damirbazar](https://t.me/damirbazar) | دمیر بازار | AI Vision |
-| [@pardissteel1](https://t.me/pardissteel1) | پردیس استیل | AI Vision |
-| [@ArianSteel](https://t.me/ArianSteel) | آرین استیل | AI Vision |
-| [@javidsteel_bonab](https://t.me/javidsteel_bonab) | جاوید استیل بناب | AI Vision |
+### کانال‌های فقط عکس (۴) — نیاز به Vision
+| کانال | توضیحات | روش |
+|-------|---------|-----|
+| [@damirbazar](https://t.me/damirbazar) | دمیر بازار | Vision AI |
+| [@pardissteel1](https://t.me/pardissteel1) | پردیس استیل | Vision AI |
+| [@ArianSteel](https://t.me/ArianSteel) | آرین استیل | Vision AI |
+| [@javidsteel_bonab](https://t.me/javidsteel_bonab) | جاوید استیل بناب | Vision AI |
 
-### Other Channels (1)
-| Channel | Description |
-|---------|-------------|
+### سایر کانال‌ها (۱)
+| کانال | توضیحات |
+|-------|---------|
 | [@Fuladnab](https://t.me/Fuladnab) | فولاد ناب |
 
-## 🖼️ Branded Image Generation
+## 🖼️ تولید عکس برنددار
 
-Each price update is converted to a professional branded image featuring:
+هر بهروزرسانی قیمت به صورت عکس حرفه‌ای با برند شرکت تولید میشه:
 
-- **Company Header** — شرکت فولاد آروین تجارت امین ایرانیان
-- **Shamsi Date** — Today's date in Iranian calendar
-- **Price Table** — Product, Grade, Size, Price columns
-- **Contact Info** — Branch phone numbers
-- **Source Link** — Link to original channel post
+- **هدر شرکت** — شرکت فولاد آروین تجارت امین ایرانیان
+- **تاریخ شمسی** — تاریخ روز در تقویم ایران
+- **جدول قیمت** — ستون‌های محصول، گرید، سایز، قیمت
+- **اطلاعات تماس** — شماره تلفن شعب
+- **لینک منبع** — لینک پست اصلی کانال
 
-### Sample Output
+### نمونه خروجی
 ```
 ┌─────────────────────────────────┐
 │  شرکت فولاد آروین تجارت امین ایرانیان  │
@@ -69,102 +69,103 @@ Each price update is converted to a professional branded image featuring:
 └─────────────────────────────────┘
 ```
 
-## 🚀 Usage
+## 🚀 نحوه استفاده
 
-### Manual Monitoring
+### مانیتور دستی
 ```bash
-# Check single channel
+# چک کردن یک کانال
 python3 monitor_channel.py saebsteelco
 
-# Run full aggregator
+# اجرای اسکرپر کامل
 python3 steel_scraper.py --post
 
-# Generate image only
+# فقط تولید عکس
 python3 generate_price_image.py
 ```
 
-### Automated Monitoring (Cron Job)
-The system runs automatically via Hermes Agent cron jobs:
+### مانیتور خودکار (کرن‌جاب)
+سیستم به صورت خودکار از طریق کرن‌جاب Hermes Agent اجرا میشه:
 
-- **Schedule:** Every 10 minutes
-- **Hours:** 8:00 AM - 5:00 PM
-- **Days:** Saturday - Thursday (Iranian business week)
-- **Timezone:** Asia/Tehran
+- **زمانبندی:** هر ۱۰ دقیقه
+- **ساعات:** ۸:۰۰ صبح تا ۵:۰۰ عصر
+- **روزها:** شنبه تا پنجشنبه (هفته کاری ایران)
+- **منطقه زمانی:** Asia/Tehran
 
-## 🏗 Architecture
+## 🏗 معماری
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Hermes Agent                         │
 │  ┌─────────────────────────────────────────────────┐  │
-│  │              Cron Job (*/10 8-16)               │  │
+│  │              کرن‌جاب (*/10 8-16)                │  │
 │  └─────────────────────────────────────────────────┘  │
 │                         │                               │
 │         ┌───────────────┼───────────────┐               │
 │         ▼               ▼               ▼               │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐       │
-│  │ Text Channels│ │Photo Channels│ │  AI Vision  │       │
-│  │  (Scraper)   │ │  (Scraper)  │ │  (Analyze)  │       │
+│  │ کانال‌های    │ │کانال‌های     │ │  Vision AI  │       │
+│  │  متنی       │ │فقط عکس     │ │  (تحلیل)    │       │
+│  │  (اسکرپر)   │ │ (اسکرپر)   │ │             │       │
 │  └─────────────┘ └─────────────┘ └─────────────┘       │
 │         │               │               │               │
 │         └───────────────┼───────────────┘               │
 │                         ▼                               │
 │  ┌─────────────────────────────────────────────────┐  │
-│  │           Price Extraction & Validation          │  │
+│  │           استخراج و اعتبارسنجی قیمت              │  │
 │  └─────────────────────────────────────────────────┘  │
 │                         │                               │
 │                         ▼                               │
 │  ┌─────────────────────────────────────────────────┐  │
-│  │        Image Generation (PIL + RTL Persian)     │  │
+│  │        تولید عکس (PIL + فارسی RTL)              │  │
 │  └─────────────────────────────────────────────────┘  │
 │                         │                               │
 │                         ▼                               │
 │  ┌─────────────────────────────────────────────────┐  │
-│  │      Telegram Bot API (Post to Channel)         │  │
+│  │      تلگرام Bot API (پست در کانال)              │  │
 │  └─────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## ⚙️ Configuration
+## ⚙️ تنظیمات
 
-### Environment Variables
-Set these in `~/.hermes/.env`:
+### متغیرهای محیطی
+این مقادیر رو در `~/.hermes/.env` تنظیم کنید:
 
 ```
 TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHANNEL_ID=-1004431236647
 ```
 
-### Cron Job Settings
-- **Timezone:** `Asia/Tehran` in `~/.hermes/config.yaml`
-- **Schedule:** `*/10 8-16 * * 6,0-4`
+### تنظیمات کرن‌جاب
+- **منطقه زمانی:** `Asia/Tehran` در `~/.hermes/config.yaml`
+- **زمانبندی:** `*/10 8-16 * * 6,0-4`
 
-## 📁 Project Structure
+## 📁 ساختار پروژه
 
 ```
 iron-price-monitor/
-├── steel_scraper.py          # Main aggregator script
-├── monitor_channel.py        # Per-channel monitor
-├── generate_price_image.py   # PIL image generator
-├── fonts/                    # Vazirmatn fonts
+├── steel_scraper.py          # اسکرپر اصلی
+├── monitor_channel.py        # مانیتور هر کانال
+├── generate_price_image.py   # تولید عکس با PIL
+├── fonts/                    # فونت‌های وزیرمتن
 │   ├── Vazirmatn-Regular.ttf
 │   └── Vazirmatn-Bold.ttf
-├── .price_monitor_cache.json # Last processed message IDs
-├── price_monitor_output.png  # Generated price images
+├── .price_monitor_cache.json # آخرین message_id هر کانال
+├── price_monitor_output.png  # عکس‌های تولید شده
 └── docs/
-    └── SKILL.md              # Hermes skill documentation
+    └── SKILL.md              # مستندات اسکیل Hermes
 ```
 
-## 🛠 Dependencies
+## 🛠 پیش‌نیازها
 
 ```bash
 pip3 install requests beautifulsoup4 Pillow jdatetime arabic-reshaper python-bidi
 ```
 
-## 📜 License
+## 📜 لایسنس
 
 MIT
 
-## 🙏 Credits
+## 🙏 سازندگان
 
-Built with [Hermes Agent](https://github.com/nousresearch/hermes-agent) by Nous Research
+با استفاده از [Hermes Agent](https://github.com/nousresearch/hermes-agent) توسط Nous Research ساخته شده
