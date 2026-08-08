@@ -35,8 +35,15 @@ Monitors 13 Iranian steel price Telegram channels for new price posts, generates
 
 ## Working Hours
 
-- **Schedule:** Every 15 minutes, 8am-5pm, Saturday-Thursday
-- **Cron:** `*/15 8-16 * * 0-4`
+- **Schedule:** Every 10 minutes, 8am-5pm, Saturday-Thursday
+- **Cron:** `*/10 8-16 * * 6,0-4`
+
+## IMPORTANT: Photo-Only Channels
+
+For photo-only channels (damirbazar, pardissteel1, ArianSteel, javidsteel_bonab):
+- Use `vision_analyze` to read prices from images
+- NEVER skip photo channels
+- Extract prices, generate branded image, post with source link
 
 ## Usage
 
